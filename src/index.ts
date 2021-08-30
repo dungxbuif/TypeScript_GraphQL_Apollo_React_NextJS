@@ -3,11 +3,14 @@ import 'reflect-metadata';
 import db from './db';
 import log from './config/logger';
 require('dotenv').config();
-
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
+
+app.get('/', (req, res) => {
+   res.send('Hello wolrd');
+});
 
 // connect to db
-db();
+db.connect(app);
 
 app.listen(PORT, () => log.cyan(`Server is running at http://localhost:${PORT}`));

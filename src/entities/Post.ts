@@ -8,18 +8,15 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class User extends BaseEntity {
+export class Post extends BaseEntity {
    @PrimaryGeneratedColumn()
-   userID!: number;
-
-   @Column({ unique: true })
-   username!: string;
-
-   @Column({ unique: true })
-   email!: string;
+   postID!: number;
 
    @Column()
-   password!: string;
+   title!: string;
+
+   @Column({ unique: true })
+   text: string;
 
    @CreateDateColumn()
    createdAt: Date;
