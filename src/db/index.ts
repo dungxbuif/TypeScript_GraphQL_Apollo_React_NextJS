@@ -37,7 +37,7 @@ const apolloDB = async (app: Express) => {
          // plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
       });
       await apolloServer.start();
-      apolloServer.applyMiddleware({ app, cors: false });
+      apolloServer.applyMiddleware({ app, cors: true });
 
       logger.succeed(
          `GraphQL server is running at  http://localhost:${PORT}${apolloServer.graphqlPath}`,
