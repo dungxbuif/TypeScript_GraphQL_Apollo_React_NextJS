@@ -4,6 +4,6 @@ import { Query, Resolver } from 'type-graphql';
 export class HelloWolrdResolver {
    @Query((_return) => String)
    hello() {
-      return 'hello wolrd';
+      return 'test';
    }
 }

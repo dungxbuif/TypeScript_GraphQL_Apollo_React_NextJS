@@ -1,10 +1,11 @@
+import { HelloWolrdResolver } from '../resolver/hello';
 // import { Context } from './../types/Context';
 import { User, Post } from '../entities';
 import { createConnection } from 'typeorm';
 import logger from '../config/logger';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
-import { HelloWolrdResolver } from '../entities/resolver/hellowolrd';
+import { UserResolver } from '../resolver/user';
 import { Express } from 'express';
 // import ApolloServerPluginLandingPageGraphQLPlayground from 'apollo-server-core';
 require('dotenv').config();
@@ -30,7 +31,7 @@ const apolloDB = async (app: Express) => {
    try {
       const apolloServer = new ApolloServer({
          schema: await buildSchema({
-            resolvers: [HelloWolrdResolver],
+            resolvers: [UserResolver, HelloWolrdResolver],
             validate: false,
          }),
          // context: ({ req, res }): Context => ({ req, res }),
