@@ -1,5 +1,6 @@
 import { validateRegisterInput } from './../untils/validateRegisterInput';
 import { RegisterInput } from '../types/RegisterInput';
+import { LoginInput } from '../types/LoginInput';
 import { UserMutationResponse } from '../types/UserMutationResponse';
 import { User } from '../entities/User';
 import { Arg, Mutation, Resolver } from 'type-graphql';
@@ -56,5 +57,58 @@ export class UserResolver {
          };
       }
    }
+
+   @Mutation((_return) => UserMutationResponse)
+   async login(
+      @Arg('loginInput') { usernameOrEmail, password }: LoginInput,
+   ): Promise<UserMutationResponse> {
+      try {
+         const IS_EMAIL = usernameOrEmail.includes('@');
+
+         const existingUser = await User.findOne(
+            IS_EMAIL ? { email: usernameOrEmail } : { username: usernameOrEmail },
+         );
+         if (!existingUser)
+            return {
+               code: 404,
+               success: false,
+               message: 'User not found',
+               errors: [
+                  {
+                     field: IS_EMAIL ? 'email' : 'username',
+                     message: 'username or email already existed',
+                  },
+               ],
+            };
+
+         const isValidPassWord = await argon2.verify(existingUser.password, password);
+
+         if (!isValidPassWord)
+            return {
+               code: 400,
+               success: false,
+               message: 'Wrong password',
+               errors: [
+                  {
+                     field: 'password',
+                     message: 'Wrong password',
+                  },
+               ],
+            };
+
+         return {
+            code: 200,
+            success: true,
+            message: 'Login succeed',
+            user: existingUser,
+         };
+      } catch (error) {
+         logger.error('Registering user failed. ', error.message);
+         return {
+            code: 500,
+            success: false,
+            message: error.message,
+         };
+      }
+   }
 }
-// aaa
