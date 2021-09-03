@@ -1,5 +1,5 @@
 import { HelloWolrdResolver } from '../resolver/hello';
-// import { Context } from './../types/Context';
+import { Context } from './../types/Context';
 import { User, Post } from '../entities';
 import { createConnection } from 'typeorm';
 import logger from '../config/logger';
@@ -7,10 +7,13 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { UserResolver } from '../resolver/user';
 import { Express } from 'express';
+import mongoose from 'mongoose';
 // import ApolloServerPluginLandingPageGraphQLPlayground from 'apollo-server-core';
 require('dotenv').config();
 
 const PORT = process.env.PORT || 6000;
+const mongoUrl = process.env.MONGODB_URL;
+
 //Postgres
 const postgresDB = async () => {
    await createConnection({
@@ -34,7 +37,7 @@ const apolloDB = async (app: Express) => {
             resolvers: [UserResolver, HelloWolrdResolver],
             validate: false,
          }),
-         // context: ({ req, res }): Context => ({ req, res }),
+         context: ({ req, res }): Context => ({ req, res }),
          // plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
       });
       await apolloServer.start();
@@ -48,9 +51,20 @@ const apolloDB = async (app: Express) => {
    }
 };
 
+//MongoDB
+const mongoDB = async () => {
+   try {
+      await mongoose.connect(mongoUrl as string);
+
+      logger.succeed('MongoDB Connected');
+   } catch (error) {
+      logger.error('MongoDB Connected', error.message);
+   }
+};
 export default {
    connect: (app: Express) => {
       postgresDB();
       apolloDB(app);
+      mongoDB();
    },
 };

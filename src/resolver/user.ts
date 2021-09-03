@@ -1,9 +1,10 @@
+import { Context } from './../types/Context';
 import { validateRegisterInput } from './../untils/validateRegisterInput';
 import { RegisterInput } from '../types/RegisterInput';
 import { LoginInput } from '../types/LoginInput';
 import { UserMutationResponse } from '../types/UserMutationResponse';
 import { User } from '../entities/User';
-import { Arg, Mutation, Resolver } from 'type-graphql';
+import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 import argon2 from 'argon2';
 import logger from '../config/logger';
 
@@ -61,6 +62,7 @@ export class UserResolver {
    @Mutation((_return) => UserMutationResponse)
    async login(
       @Arg('loginInput') { usernameOrEmail, password }: LoginInput,
+      @Ctx() { req }: Context,
    ): Promise<UserMutationResponse> {
       try {
          const IS_EMAIL = usernameOrEmail.includes('@');
@@ -95,6 +97,9 @@ export class UserResolver {
                   },
                ],
             };
+
+         //Create session
+         req.session.userID = existingUser.userID;
 
          return {
             code: 200,
