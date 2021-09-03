@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"main": "index.js",
 	"scripts": {
-		"start": "nodemon dist/index.js",
+		"start": " nodemon dist/index.js",
 		"start-ts": "nodemon --exec ts-node src/index.ts"
 	},
 	"repository": "https://github.com/dungxbuif/TypeScript_GraphQL_Apollo_React_NextJS.git",

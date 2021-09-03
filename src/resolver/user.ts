@@ -1,3 +1,4 @@
+import { COOKIE_NAME } from './../constants';
 import { Context } from './../types/Context';
 import { validateRegisterInput } from './../untils/validateRegisterInput';
 import { RegisterInput } from '../types/RegisterInput';
@@ -13,6 +14,7 @@ export class UserResolver {
    @Mutation((_return) => UserMutationResponse)
    async register(
       @Arg('registerInput') registerInput: RegisterInput,
+      @Ctx() { req }: Context,
    ): Promise<UserMutationResponse> {
       try {
          const { email, username, password } = registerInput;
@@ -37,17 +39,21 @@ export class UserResolver {
 
          const hashPassWord = await argon2.hash(password);
 
-         const newUser = User.create({
+         let newUser = User.create({
             username,
             password: hashPassWord,
             email,
          });
 
+         await User.save(newUser);
+         //Create session
+         req.session.userID = newUser.userID;
+
          return {
             code: 200,
             success: true,
             message: 'User existed',
-            user: await User.save(newUser),
+            user: newUser,
          };
       } catch (error) {
          logger.error('Registering user failed. ', error.message);
@@ -115,5 +121,19 @@ export class UserResolver {
             message: error.message,
          };
       }
+   }
+
+   @Mutation((_return) => Boolean)
+   logout(@Ctx() { req, res }: Context): Promise<Boolean> {
+      return new Promise((resolve, _reject) => {
+         res.clearCookie(COOKIE_NAME as string);
+         req.session.destroy((error) => {
+            if (error) {
+               console.log('Destroying session failed.', error.message);
+               resolve(false);
+            }
+            resolve(true);
+         });
+      });
    }
 }
