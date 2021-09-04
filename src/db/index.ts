@@ -1,5 +1,5 @@
 import { HelloWolrdResolver } from '../resolver/hello';
-import { Context } from './../types/Context';
+// import { Context } from './../types/Context';
 import { User, Post } from '../entities';
 import { createConnection } from 'typeorm';
 import logger from '../config/logger';
@@ -37,7 +37,7 @@ const apolloDB = async (app: Express) => {
             resolvers: [UserResolver, HelloWolrdResolver],
             validate: false,
          }),
-         context: ({ req, res }): Context => ({ req, res }),
+         // context: ({ req, res }): Context => ({ req, res }),
          // plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
       });
       await apolloServer.start();

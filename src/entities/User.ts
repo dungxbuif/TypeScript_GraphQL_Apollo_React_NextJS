@@ -4,12 +4,15 @@ import {
    Column,
    CreateDateColumn,
    Entity,
+   OneToMany,
    PrimaryGeneratedColumn,
    UpdateDateColumn,
 } from 'typeorm';
+import { Post } from './Post';
+// import { Upvote } from './Upvote';
 
 @ObjectType()
-@Entity()
+@Entity() // db table
 export class User extends BaseEntity {
    @Field((_type) => ID)
    @PrimaryGeneratedColumn()
@@ -25,6 +28,12 @@ export class User extends BaseEntity {
 
    @Column()
    password!: string;
+
+   @OneToMany(() => Post, (post) => post.user)
+   posts: Post[];
+
+   @OneToMany((_to) => Upvote, (upvote) => upvote.user)
+   upvotes: Upvote[];
 
    @Field()
    @CreateDateColumn()

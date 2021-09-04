@@ -1,10 +1,7 @@
 import { Field, InputType } from 'type-graphql'
 
 @InputType()
-export class CreatePostInput {
+export class ForgotPasswordInput {
 	@Field()
-	title: string
-
-	@Field()
-	text: string
+	email: string
 }

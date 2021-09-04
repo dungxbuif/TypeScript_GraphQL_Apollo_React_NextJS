@@ -1,6 +1,6 @@
 import { COOKIE_NAME } from './../constants';
 import { Context } from './../types/Context';
-import { validateRegisterInput } from './../untils/validateRegisterInput';
+import { validateRegisterInput } from './../utils/validateRegisterInput';
 import { RegisterInput } from '../types/RegisterInput';
 import { LoginInput } from '../types/LoginInput';
 import { UserMutationResponse } from '../types/UserMutationResponse';
@@ -45,7 +45,7 @@ export class UserResolver {
             email,
          });
 
-         await User.save(newUser);
+         await newUser.save();
          //Create session
          req.session.userID = newUser.userID;
 
